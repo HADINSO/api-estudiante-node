@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DB_PATH = path.join(__dirname, "estudiantes.json");
+const DB_PATH = path.join(__dirname, "db.json");
 
 // ─── Middlewares ───────────────────────────────────────────────────────────────
 app.use(cors()); // Permite todas las origenes
