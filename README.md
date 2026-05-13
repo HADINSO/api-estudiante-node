@@ -1,29 +1,37 @@
-# 📚 API CRUD de Estudiantes
+# 📚 API CRUD de Estudiantes — PHP Nativo
 
-API REST construida con **Node.js + Express** que usa un archivo JSON como base de datos.
+API REST en **PHP puro** (sin frameworks) que usa `estudiantes.json` como base de datos.
 
 ---
 
 ## 🚀 Instalación y uso
 
+### Opción A — Servidor built-in de PHP (desarrollo rápido)
 ```bash
-npm install
-node index.js
+php -S localhost:3000 router.php
 ```
 
-El servidor corre en `http://localhost:3000`.
+### Opción B — Apache con mod_rewrite
+1. Copia la carpeta en `htdocs/` o `www/`
+2. Asegúrate de tener `mod_rewrite` activo
+3. El `.htaccess` incluido redirige todo a `index.php`
+
+> **Permisos:** el archivo `estudiantes.json` debe ser escribible por el servidor web.
+> ```bash
+> chmod 664 estudiantes.json
+> ```
 
 ---
 
 ## 📋 Estructura del estudiante
 
-| Campo      | Tipo    | Descripción                        |
-|------------|---------|------------------------------------|
-| `id`       | string  | UUID generado automáticamente      |
-| `nombre`   | string  | Nombre del estudiante              |
-| `apellido` | string  | Apellido del estudiante            |
-| `edad`     | integer | Edad (entre 1 y 120)               |
-| `cedula`   | string  | Cédula única del estudiante        |
+| Campo      | Tipo    | Descripción                      |
+|------------|---------|----------------------------------|
+| `id`       | string  | UUID v4 generado automáticamente |
+| `nombre`   | string  | Nombre del estudiante            |
+| `apellido` | string  | Apellido del estudiante          |
+| `edad`     | integer | Edad (entre 1 y 120)             |
+| `cedula`   | string  | Cédula única del estudiante      |
 
 ---
 
@@ -33,40 +41,41 @@ El servidor corre en `http://localhost:3000`.
 Lista todos los estudiantes.
 
 **Query params opcionales:**
-- `?nombre=María` — filtra por nombre (parcial, sin distinción de mayúsculas)
-- `?apellido=González` — filtra por apellido
-- `?cedula=1001234567` — filtra por cédula exacta
+| Param | Ejemplo | Descripción |
+|---|---|---|
+| `nombre` | `?nombre=mar` | Filtro parcial, sin distinción mayúsculas |
+| `apellido` | `?apellido=gonzalez` | Filtro parcial |
+| `cedula` | `?cedula=1001234567` | Búsqueda exacta |
 
-**Respuesta exitosa `200`:**
+**Respuesta `200`:**
 ```json
 {
   "total": 3,
-  "estudiantes": [...]
+  "estudiantes": [ ... ]
 }
 ```
 
 ---
 
-### 2. `GET /api/estudiantes/:id`
-Obtiene un estudiante por su ID.
+### 2. `GET /api/estudiantes/{id}`
+Obtiene un estudiante por su UUID.
 
-**Respuesta exitosa `200`:**
+**Respuesta `200`:**
 ```json
 {
-  "id": "uuid",
+  "id": "a1b2c3d4-...",
   "nombre": "María",
   "apellido": "González",
   "edad": 20,
   "cedula": "1001234567"
 }
 ```
-
-**Error `404`:** Estudiante no encontrado.
+**Error `404`:** estudiante no encontrado.
 
 ---
 
 ### 3. `POST /api/estudiantes`
-Crea un nuevo estudiante. Todos los campos son obligatorios.
+Crea un nuevo estudiante. Todos los campos son **obligatorios**.
 
 **Body `application/json`:**
 ```json
@@ -78,22 +87,20 @@ Crea un nuevo estudiante. Todos los campos son obligatorios.
 }
 ```
 
-**Respuesta exitosa `201`:**
+**Respuesta `201`:**
 ```json
 {
   "mensaje": "Estudiante creado correctamente.",
-  "estudiante": { "id": "uuid", ... }
+  "estudiante": { "id": "uuid-nuevo", ... }
 }
 ```
 
-**Errores:**
-- `400` — Campos inválidos o faltantes
-- `409` — La cédula ya existe
+**Errores:** `400` campos inválidos · `409` cédula duplicada
 
 ---
 
-### 4. `PUT /api/estudiantes/:id`
-Reemplaza **todos** los campos de un estudiante. Todos los campos son obligatorios.
+### 4. `PUT /api/estudiantes/{id}`
+**Reemplaza** todos los campos de un estudiante. Todos los campos son obligatorios.
 
 **Body `application/json`:**
 ```json
@@ -105,7 +112,7 @@ Reemplaza **todos** los campos de un estudiante. Todos los campos son obligatori
 }
 ```
 
-**Respuesta exitosa `200`:**
+**Respuesta `200`:**
 ```json
 {
   "mensaje": "Estudiante actualizado correctamente.",
@@ -113,24 +120,19 @@ Reemplaza **todos** los campos de un estudiante. Todos los campos son obligatori
 }
 ```
 
-**Errores:**
-- `400` — Campos inválidos
-- `404` — No encontrado
-- `409` — Cédula duplicada
+**Errores:** `400` · `404` · `409`
 
 ---
 
-### 5. `PATCH /api/estudiantes/:id`
-Actualiza **parcialmente** un estudiante. Solo envía los campos a modificar.
+### 5. `PATCH /api/estudiantes/{id}`
+**Actualización parcial** — solo envía los campos que quieres modificar.
 
-**Body `application/json` (ejemplo parcial):**
+**Body `application/json`:**
 ```json
-{
-  "edad": 23
-}
+{ "edad": 23 }
 ```
 
-**Respuesta exitosa `200`:**
+**Respuesta `200`:**
 ```json
 {
   "mensaje": "Estudiante actualizado parcialmente.",
@@ -140,26 +142,27 @@ Actualiza **parcialmente** un estudiante. Solo envía los campos a modificar.
 
 ---
 
-### 6. `DELETE /api/estudiantes/:id`
-Elimina un estudiante por su ID.
+### 6. `DELETE /api/estudiantes/{id}`
+Elimina un estudiante.
 
-**Respuesta exitosa `200`:**
+**Respuesta `200`:**
 ```json
 {
   "mensaje": "Estudiante eliminado correctamente.",
   "estudiante": { ... }
 }
 ```
-
-**Error `404`:** Estudiante no encontrado.
+**Error `404`:** estudiante no encontrado.
 
 ---
 
 ## ⚙️ CORS
-La API acepta peticiones desde **cualquier origen** (`cors()` sin restricciones). Para producción, limitar orígenes en `index.js`:
+Las cabeceras CORS se configuran al inicio de `index.php`:
 
-```js
-app.use(cors({ origin: "https://tu-frontend.com" }));
+```php
+header("Access-Control-Allow-Origin: *");           // permite todo
+// Para producción, restringe el origen:
+header("Access-Control-Allow-Origin: https://tu-frontend.com");
 ```
 
 ---
@@ -167,9 +170,10 @@ app.use(cors({ origin: "https://tu-frontend.com" }));
 ## 📁 Estructura del proyecto
 
 ```
-student-api/
-├── index.js           # Servidor y rutas
+student-api-php/
+├── index.php          # Lógica principal (router + controladores)
+├── router.php         # Router para el servidor built-in de PHP
 ├── estudiantes.json   # Base de datos JSON
-├── package.json
+├── .htaccess          # Reescritura de URLs para Apache
 └── README.md
 ```
