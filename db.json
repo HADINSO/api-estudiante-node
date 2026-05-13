@@ -1,0 +1,25 @@
+{
+  "estudiantes": [
+    {
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "nombre": "María",
+      "apellido": "González",
+      "edad": 20,
+      "cedula": "1001234567"
+    },
+    {
+      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "nombre": "Carlos",
+      "apellido": "Rodríguez",
+      "edad": 22,
+      "cedula": "1009876543"
+    },
+    {
+      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "nombre": "Valentina",
+      "apellido": "Martínez",
+      "edad": 19,
+      "cedula": "1005551234"
+    }
+  ]
+}

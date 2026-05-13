@@ -1,0 +1,32 @@
+{
+  "name": "student-api",
+  "version": "1.0.0",
+  "description": "API REST para gestión de estudiantes con Express.js",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"No hay pruebas configuradas\" && exit 0"
+  },
+  "keywords": [
+    "api",
+    "express",
+    "students",
+    "nodejs",
+    "backend"
+  ],
+  "author": "Hadinso",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
